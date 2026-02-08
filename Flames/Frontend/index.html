@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 FLAMES Relationship Checker</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            margin:0;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#ff758c,#ff7eb3);
+        }
+
+        .container{
+            width:360px;
+            padding:30px;
+            border-radius:25px;
+            background:rgba(255,255,255,0.25);
+            backdrop-filter:blur(14px);
+            box-shadow:0 25px 50px rgba(0,0,0,0.35);
+            text-align:center;
+            transform-style:preserve-3d;
+            transition:0.4s;
+        }
+
+        .container:hover{
+            transform:rotateX(6deg) rotateY(-6deg);
+        }
+
+        h1{
+            margin-bottom:20px;
+            color:#fff;
+            text-shadow:0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin:10px 0;
+            border:none;
+            border-radius:12px;
+            outline:none;
+            font-size:15px;
+        }
+
+        button{
+            margin-top:15px;
+            padding:12px 40px;
+            border:none;
+            border-radius:30px;
+            background:linear-gradient(45deg,#ff416c,#ff4b2b);
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            box-shadow:0 10px 20px rgba(0,0,0,0.35);
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:scale(1.08);
+        }
+
+        .output{
+            margin-top:25px;
+            min-height:90px;
+        }
+
+        .result{
+            font-size:22px;
+            color:#fff;
+            font-weight:bold;
+        }
+
+        .emoji{
+            font-size:50px;
+            margin-top:10px;
+            animation:pop 0.6s ease;
+        }
+
+        @keyframes pop{
+            from{transform:scale(0)}
+            to{transform:scale(1)}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>💖 FLAMES</h1>
+
+    <input type="text" id="boy" placeholder="Your Name">
+    <input type="text" id="girl" placeholder="Partner Name">
+
+    <button onclick="checkFlames()">Check Relationship</button>
+
+    <div class="output">
+        <div id="result" class="result"></div>
+        <div id="emoji" class="emoji"></div>
+    </div>
+</div>
+
+<script>
+    function checkFlames(){
+
+        const boy = document.getElementById("boy").value.trim();
+        const girl = document.getElementById("girl").value.trim();
+
+        if(!boy || !girl){
+            alert("Please enter both names");
+            return;
+        }
+
+        fetch("http://localhost:8080/result", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                boy: boy,
+                girl: girl
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.result;
+                document.getElementById("emoji").innerText = data.emoji;
+            })
+            .catch(err => {
+                alert("Backend not responding");
+                console.error(err);
+            });
+    }
+</script>
+
+</body>
+</html>
